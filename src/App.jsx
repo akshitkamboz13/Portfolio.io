@@ -1,6 +1,6 @@
-// src/App.jsx
 import React, { useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -11,12 +11,15 @@ import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 
-
 const App = () => {
-  const stickyElement = useRef(null); // Create a ref for the sticky element
+  const stickyElement = useRef(null);
 
   return (
     <div className="relative font-sans custom-cursor">
+      <Helmet>
+        <title>Portfolio.io</title>
+        <meta name="description" content="My portfolio showcasing my skills, projects, and experiences." />
+      </Helmet>
       <Router>
         <Navbar />
         <Routes>
