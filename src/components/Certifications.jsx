@@ -1,16 +1,12 @@
-import React , {useEffect} from 'react';
+import React from 'react';
 import { FaCertificate } from 'react-icons/fa';
 import CertificateCard from './helperComponents/CertificateCard';
 import certificateData from './helperComponents/CertificateData';
 import { Link } from "react-router-dom";
 
 const Certificates = ({ count }) => {
-  useEffect(() => {
-    document.title = "Certifications | Akshit Kamboj";
-  });
   const icon = <FaCertificate className="h-10 w-10 text-white" />;
   
-  // If count is provided, slice the certificateData array; otherwise, use the entire array
   const displayedCertificates = count ? certificateData.slice(0, count) : certificateData;
 
   return (
@@ -30,11 +26,12 @@ const Certificates = ({ count }) => {
           />
         ))}
       </div>
-      <div className='text-center m-20'>
+      <div className='text-center m-36 '>
       {count && (
           <Link
-          to="/certifications"
-          className="bg-white text-custom-blue font-bold py-2 px-4 rounded custom-cursor-pointer"
+          to= "/certifications" 
+          className="bg-white text-custom-blue font-bold py-2 px-4 rounded custom-cursor-pointer hover:bg-custom-blue hover:text-white transition-colors duration-300 hover:scale-110 hover:shadow-lg hover:border-l-2 hover:transform hover:border-r-2 border-white 
+          "
         >
           View All
         </Link>

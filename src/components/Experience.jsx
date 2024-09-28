@@ -1,9 +1,5 @@
-import React, {useEffect} from 'react'
-
 const Experience = () => {
-  useEffect(() => {
-    document.title = "Experience | Akshit Kamboj";
-  });
+  
   return (
     <>
     <div className="relative w-full h-screen bg-custom-blue">

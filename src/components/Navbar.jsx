@@ -45,7 +45,8 @@ const Navbar = () => {
     <div className="w-full">
       <nav
       //className={`navbar ${show ? "bg-gray-900 shadow-lg" : "bg-transparent"}  fixed top-0 w-full z-50 transition-colors duration-300 py-10 px-5 ${
-        className={`navbar bg-transparent fixed top-0 w-full z-50 transition-colors duration-300 py-10 px-5`}
+        className={`navbar bg-custom-blue opacity-90
+           fixed top-0 w-full z-50 transition-colors duration-300 py-10 px-5`}
       >
         <div className="navbar__container flex items-center justify-between ">
           <div className="navbar__logo text-white custom-cursor-pointer">

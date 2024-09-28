@@ -1,12 +1,8 @@
 import React from 'react';
-import { useEffect } from 'react';
 import Si4kImg from '../assets/AkshitRes11.jpg';
 import { FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa';
 
 const About = () => {
-  useEffect(() => {
-    document.title = "About | Akshit Kamboj";
-  },[]);
   return (
     <section className="w-full h-screen bg-custom-blue flex flex-col lg:flex-row items-center justify-around p-10  md:pt-12 gap-3">
       <div className="flex justify-center w-full mb-6 md:mb-0 ">

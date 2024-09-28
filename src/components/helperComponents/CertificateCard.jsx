@@ -26,7 +26,7 @@ const CertificateCard = ({ title, description, link, icon }) => {
         </div>
         
         
-        <div className="box-image">{description}</div>
+        <div className="box-image ">{description}</div>
         <button
           className="view-button custom-cursor-pointer"
           onClick={() => window.open(link)}

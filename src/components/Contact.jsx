@@ -1,15 +1,12 @@
-import { useEffect } from 'react';
+
 import { FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa';
 import { FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa';
 import Map from './helperComponents/Map';
 
 const Contact = () => {
-  useEffect(() => {
-    document.title = "Contact | Akshit Kamboj";
-  },[]);
   return (
-    <div>
-    <div className="h-screen bg-custom-blue flex text-white items-center justify-center ">
+    <div id='Contact'>
+    <div className="h-screen bg-custom-blue flex text-white items-center justify-center sm:pt-10">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 bg-custom-blue rounded-lg overflow-hidden">
         {/* Contact Information */}
         <div className="p-8 md:p-16 gap-5">

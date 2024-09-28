@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import projects from '../assets/Projects.json';
 
 const Projects = () => {
-  useEffect(() => {
-    document.title = "Projects | Akshit Kamboj";
-  }, []);
 
   return (
     <section className="projects w-full bg-custom-blue py-20" id="projects">

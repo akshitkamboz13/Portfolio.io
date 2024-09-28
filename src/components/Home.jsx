@@ -10,8 +10,8 @@ const Map = lazy(() => import("./helperComponents/Map"));
 
 const Home = () => {
   useEffect(() => {
-    document.title = "Home | Akshit Kamboj";
-  });
+    document.title = "Akshit Kamboj";
+  },[]);
   return (
     <> 
       <div className="relative w-full h-screen bg-custom-blue">
