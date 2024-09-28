@@ -20,7 +20,7 @@ const App = () => {
         <title>Portfolio.io</title>
         <meta name="description" content="My portfolio showcasing my skills, projects, and experiences." />
       </Helmet>
-      <Router>
+      <Router basename="/Portfolio.io">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

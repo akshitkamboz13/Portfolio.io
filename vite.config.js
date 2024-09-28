@@ -4,10 +4,7 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  
-  // This is needed if you're deploying to a sub-path on GitHub Pages or Netlify
-  // Set the correct base path for your project if deploying to a subdirectory
-  base: process.env.NODE_ENV === 'production' ? 'Portfolio.io' : '/',
+  base: '/Portfolio.io/',
 
   // Configure build options
   build: {
