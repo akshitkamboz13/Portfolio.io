@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import ParticleBackground from "./ParticleBackground";
 import { FaArrowDown, FaCode, FaLaptopCode, FaMobileAlt } from "react-icons/fa";
 
@@ -21,28 +21,86 @@ const FloatingIcon = ({ icon, position, delay, duration }) => {
 
 const FrontMain = () => {
   const textRef = useRef(null);
+  const rafRef = useRef(null);
+  const lastMoveTime = useRef(0);
+  const [showArrow, setShowArrow] = useState(true);
+  const location = useLocation();
   
   useEffect(() => {
+    // Hide arrow if not on homepage
+    if (location.pathname !== '/') {
+      setShowArrow(false);
+      return;
+    } else {
+      setShowArrow(true);
+    }
+    
+    // Throttle handler for better performance
     const handleMouseMove = (e) => {
       if (!textRef.current) return;
       
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
+      // Only process every 30ms (approximately 30fps instead of potentially 60+fps)
+      const now = Date.now();
+      if (now - lastMoveTime.current < 30) return;
+      lastMoveTime.current = now;
       
-      // Calculate movement percentage (-5 to 5)
-      const moveX = (clientX / innerWidth - 0.5) * 10;
-      const moveY = (clientY / innerHeight - 0.5) * 10;
+      // Use requestAnimationFrame to align with the browser's render cycle
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
       
-      // Apply 3D transform to text
-      textRef.current.style.transform = `perspective(1000px) rotateX(${moveY}deg) rotateY(${moveX}deg)`;
+      rafRef.current = requestAnimationFrame(() => {
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+        
+        // Calculate movement percentage (-5 to 5)
+        const moveX = (clientX / innerWidth - 0.5) * 10;
+        const moveY = (clientY / innerHeight - 0.5) * 10;
+        
+        // Apply 3D transform to text - using a less intensive transform
+        if (textRef.current) {
+          textRef.current.style.transform = `perspective(1000px) rotateX(${moveY}deg) rotateY(${moveX}deg)`;
+        }
+      });
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
+    // Handle scroll to hide arrow when scrolling past the hero section
+    const handleScroll = () => {
+      const aboutSection = document.getElementById('about');
+      if (aboutSection) {
+        const aboutSectionTop = aboutSection.getBoundingClientRect().top;
+        // Hide arrow when About section is close to viewport top
+        if (aboutSectionTop < window.innerHeight * 0.8) {
+          setShowArrow(false);
+        } else {
+          setShowArrow(true);
+        }
+      }
+    };
+    
+    // Call once to initialize
+    handleScroll();
+    
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, []);
+  }, [location.pathname]);
+  
+  // Handle smooth scroll to About section
+  const scrollToAbout = (e) => {
+    e.preventDefault();
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   
   return (
     <>
@@ -116,25 +174,26 @@ const FrontMain = () => {
               
               <Link
                 to="/contact"
-                className="premium-button secondary group relative"
+                className="premium-button primary flex items-center justify-center gap-2 transform transition-all duration-300 hover:scale-105"
               >
-                <span className="relative z-10 group-hover:text-blue-400 transition-colors duration-300">Get In Touch</span>
+                <span className="text-white">Get In Touch</span>
               </Link>
             </div>
           </div>
-          
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 fade-in" style={{ animationDelay: '1.5s' }}>
+        </div>
+        
+        {showArrow && (
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 fade-in" style={{ animationDelay: '1.5s', zIndex: 20 }}>
             <a 
               href="#about" 
               className="inline-block group"
               aria-label="Scroll down"
+              onClick={scrollToAbout}
             >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-800/50 backdrop-blur-sm border border-gray-700 shadow-lg group-hover:bg-blue-600/50 group-hover:border-blue-500/50 transition-all duration-300">
-                <FaArrowDown className="text-white opacity-70 group-hover:opacity-100 animate-bounce" />
-              </div>
+              <FaArrowDown className="text-3xl text-white opacity-70 group-hover:opacity-100 group-hover:text-blue-400 animate-bounce transition-all duration-300" />
             </a>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

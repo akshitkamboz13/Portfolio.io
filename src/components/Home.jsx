@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
+import CustomLoader from "./helperComponents/CustomLoader";
 
 const Certifications = lazy(() => import("./Certifications"));
 const About = lazy(() => import("./About"));
@@ -8,16 +9,6 @@ const Contact = lazy(() => import("./Contact"));
 const Skills = lazy(() => import("./Skills"));
 const Projects = lazy(() => import("./Projects"));
 
-// Loading fallback component
-const LoadingFallback = () => (
-  <div className="flex justify-center items-center h-screen">
-    <div className="relative">
-      <div className="h-24 w-24 rounded-full border-t-4 border-b-4 border-blue-accent animate-spin"></div>
-      <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-l-4 border-r-4 border-purple-accent animate-spin animate-pulse"></div>
-    </div>
-  </div>
-);
-
 const Home = () => {
   useEffect(() => {
     document.title = "Akshit Kamboj | Portfolio";
@@ -26,19 +17,19 @@ const Home = () => {
   return (
     <div className="bg-custom-blue text-white">
       <section id="hero" className="relative w-full h-screen">
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<CustomLoader />}>
           <FrontMain />
         </Suspense>
       </section>
       
       <main className="relative w-full">
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<CustomLoader />}>
           <div id="about-section">
             <About />
           </div>
           
           <div id="skills-section" className="py-12 md:py-20">
-            <Skills />
+            <Skills isHomePage={true} maxSkills={6} />
           </div>
           
           <div id="education-section" className="py-12 md:py-20 bg-gray-900 bg-opacity-30">
@@ -50,7 +41,7 @@ const Home = () => {
           </div>
           
           <div id="projects-section" className="py-12 md:py-20 bg-gray-900 bg-opacity-30">
-            <Projects />
+            <Projects isHomePage={true} maxProjects={3} />
           </div>
           
           <div id="contact-section" className="py-12 md:py-20">

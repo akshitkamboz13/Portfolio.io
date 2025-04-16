@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import Si4kImg from '../assets/AkshitRes11.jpg';
 import { FaLinkedin, FaGithub, FaTwitter, FaCode, FaServer, FaLaptopCode, FaDownload } from 'react-icons/fa';
+import AnimatedBackground from './helperComponents/AnimatedBackground';
+import SectionObserver from './helperComponents/SectionObserver';
 
 const AboutCard = ({ icon, title, description, delay }) => {
   return (
@@ -33,6 +35,21 @@ const SocialLink = ({ href, bgColor, icon }) => {
     </a>
   );
 };
+
+const FloatingParticle = ({ color, size, delay, duration, top, left }) => (
+  <div 
+    className="absolute rounded-full opacity-20 floating"
+    style={{ 
+      backgroundColor: color,
+      width: size,
+      height: size,
+      top: top,
+      left: left,
+      animationDelay: delay,
+      animationDuration: duration
+    }}
+  />
+);
 
 const About = () => {
   const containerRef = useRef(null);
@@ -69,91 +86,106 @@ const About = () => {
   }, []);
   
   return (
-    <section id="about" className="section-container relative">
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-      
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-20">
-        <div ref={containerRef} className="flex justify-center w-full lg:w-1/3 mb-6 lg:mb-0 fade-in">
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 opacity-75 blur-xl rounded-full animate-pulse"></div>
-            <div className="relative z-10 transition-all duration-300" ref={imageRef}>
-              <img 
-                src={Si4kImg} 
-                alt="Akshit Kamboj" 
-                loading="lazy"
-                className="rounded-full h-64 w-64 md:h-80 md:w-80 object-cover shadow-2xl border-4 border-blue-800"
-              />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 mix-blend-overlay"></div>
-            </div>
-            
-            <div className="absolute -bottom-4 -right-4 bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-full shadow-lg transform hover:scale-110 transition-transform duration-300">
-              <a href="#" className="text-white flex items-center gap-2 font-medium">
-                <FaDownload className="text-white" />
-                <span className="text-sm">Resume</span>
-              </a>
-            </div>
-          </div>
-        </div>
+    <SectionObserver>
+      <section id="about" className="section-container relative">
+        <AnimatedBackground color1="#6366f1" color2="#8b5cf6" density={0.00006} />
         
-        <div className="text-white text-center lg:text-left lg:w-2/3 slide-up">
-          <h2 className="section-title">About <span className="premium-gradient-text">Me</span></h2>
-          <p className="text-xl md:text-2xl mb-6 text-blue-400 font-medium">Full Stack Developer & Tech Enthusiast</p>
-          
-          <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md p-6 rounded-xl mb-8 border border-blue-500/20">
-            <p className="text-lg md:text-xl mb-2 text-gray-300 leading-relaxed">
-              I am a passionate Full Stack Developer with expertise in building modern web applications. 
-              I combine technical skills with creative problem-solving to deliver seamless user experiences.
-            </p>
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-              My goal is to create innovative solutions that make a positive impact.
-            </p>
+        {/* Decorative floating particles */}
+        <FloatingParticle color="#6366f1" size="90px" delay="0s" duration="5s" top="15%" left="8%" />
+        <FloatingParticle color="#8b5cf6" size="70px" delay="0.7s" duration="4s" top="75%" left="80%" />
+        <FloatingParticle color="#a78bfa" size="50px" delay="1.2s" duration="4.2s" top="30%" left="90%" />
+        <FloatingParticle color="#6366f1" size="40px" delay="0.3s" duration="3.5s" top="60%" left="15%" />
+        
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-20">
+          <div ref={containerRef} className="flex justify-center w-full lg:w-1/3 mb-6 lg:mb-0 fade-in">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 opacity-75 blur-xl rounded-full animate-pulse"></div>
+              <div className="relative z-10 transition-all duration-300" ref={imageRef}>
+                <img 
+                  src={Si4kImg} 
+                  alt="Akshit Kamboj" 
+                  loading="lazy"
+                  className="rounded-full h-64 w-64 md:h-80 md:w-80 object-cover shadow-2xl border-4 border-blue-800"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 mix-blend-overlay"></div>
+              </div>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 stagger-animation">
-            <AboutCard 
-              icon={<FaLaptopCode className="text-blue-500" />}
-              title="Frontend"
-              description="Creating responsive and intuitive user interfaces with modern frameworks"
-              delay={0.1}
-            />
+          <div className="text-white text-center lg:text-left lg:w-2/3 slide-up">
+            <h2 className="section-title">About <span className="premium-gradient-text">Me</span></h2>
+            <p className="text-xl md:text-2xl mb-6 text-blue-400 font-medium">Full Stack Developer & Tech Enthusiast</p>
             
-            <AboutCard 
-              icon={<FaServer className="text-purple-500" />}
-              title="Backend"
-              description="Building robust APIs and server-side applications with scalable architecture"
-              delay={0.2}
-            />
+            <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md p-6 rounded-xl mb-8 border border-blue-500/20">
+              <p className="text-lg md:text-xl mb-2 text-gray-300 leading-relaxed">
+                I am a passionate Full Stack Developer with expertise in building modern web applications. 
+                I combine technical skills with creative problem-solving to deliver seamless user experiences.
+              </p>
+              <p className="text-lg md:text-xl mb-4 text-gray-300 leading-relaxed">
+                My goal is to create innovative solutions that make a positive impact.
+              </p>
+              
+              <div className="mt-4 flex justify-center lg:justify-start">
+                <a 
+                  href="https://drive.google.com/file/d/1Z6Oq-DVVd0OXXONaqt34-O0zWbIUaQST/view?usp=sharing" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300"
+                >
+                  <FaDownload className="text-white" />
+                  <span className="text-white font-medium">Download Resume</span>
+                </a>
+              </div>
+            </div>
             
-            <AboutCard 
-              icon={<FaCode className="text-indigo-500" />}
-              title="Development"
-              description="Architecting comprehensive software solutions from concept to deployment"
-              delay={0.3}
-            />
-          </div>
-          
-          <div className="flex justify-center lg:justify-start gap-6">
-            <SocialLink 
-              href="https://www.linkedin.com/in/akshitkamboz13"
-              bgColor="#0077b5"
-              icon={<FaLinkedin size={20} />}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 stagger-animation">
+              <AboutCard 
+                icon={<FaLaptopCode className="text-blue-500" />}
+                title="Frontend"
+                description="Creating responsive and intuitive user interfaces with modern frameworks"
+                delay={0.1}
+              />
+              
+              <AboutCard 
+                icon={<FaServer className="text-purple-500" />}
+                title="Backend"
+                description="Building robust APIs and server-side applications with scalable architecture"
+                delay={0.2}
+              />
+              
+              <AboutCard 
+                icon={<FaCode className="text-indigo-500" />}
+                title="Development"
+                description="Architecting comprehensive software solutions from concept to deployment"
+                delay={0.3}
+              />
+            </div>
             
-            <SocialLink 
-              href="https://www.github.com/akshitkamboz13"
-              bgColor="#333"
-              icon={<FaGithub size={20} />}
-            />
-            
-            <SocialLink 
-              href="https://www.twitter.com/siakshit"
-              bgColor="#1da1f2"
-              icon={<FaTwitter size={20} />}
-            />
+            <div className="flex justify-center lg:justify-start gap-6">
+              <SocialLink 
+                href="https://www.linkedin.com/in/akshitkamboz13"
+                bgColor="#0077b5"
+                icon={<FaLinkedin size={20} />}
+              />
+              
+              <SocialLink 
+                href="https://www.github.com/akshitkamboz13"
+                bgColor="#333"
+                icon={<FaGithub size={20} />}
+              />
+              
+              <SocialLink 
+                href="https://www.twitter.com/siakshit"
+                bgColor="#1da1f2"
+                icon={<FaTwitter size={20} />}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </SectionObserver>
   );
 }
 

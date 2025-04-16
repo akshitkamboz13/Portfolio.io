@@ -94,9 +94,10 @@ const Navbar = () => {
           </div>
           
           <button
-            className="navbar__toggle md:hidden text-white flex items-center justify-center p-2 rounded-md bg-gradient-to-r from-blue-600/80 to-blue-700/80 hover:from-blue-500 hover:to-indigo-600 transition-all duration-300 shadow-md"
+            className="navbar__toggle md:hidden text-white flex items-center justify-center p-2 rounded-md hover:bg-blue-600/20 transition-all duration-300"
             onClick={handleMenu}
             aria-label="Toggle menu"
+            style={{ background: 'transparent' }}
           >
             {menuOpen ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -112,6 +113,16 @@ const Navbar = () => {
         
         {menuOpen && (
           <div className="navbar__mobile-menu open">
+            <button
+              className="absolute top-5 right-5 p-2 text-white hover:bg-blue-600/20 rounded-full transition-all duration-300"
+              onClick={handleMenu}
+              aria-label="Close menu"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
             <ul className="flex flex-col items-center space-y-6 py-12 stagger-animation">
               {navList.map((nav, index) => (
                 <li key={nav.id} style={{ '--i': index + 1 }}>

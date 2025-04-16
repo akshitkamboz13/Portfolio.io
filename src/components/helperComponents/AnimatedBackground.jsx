@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 
-const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 0.00015 }) => {
+const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 0.00008 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const engineRef = useRef(null);
@@ -19,11 +19,17 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
           Mouse = Matter.Mouse,
           MouseConstraint = Matter.MouseConstraint;
 
-    // Create engine
-    const engine = Engine.create();
+    // Create engine with reduced constraints for better performance
+    const engine = Engine.create({
+      positionIterations: 2, // default is 6
+      velocityIterations: 2, // default is 4
+    });
     engineRef.current = engine;
 
-    // Create renderer
+    // Reduce gravity effect for performance
+    engine.world.gravity.y = 0;
+
+    // Create renderer with optimized settings
     const render = Render.create({
       element: container,
       engine: engine,
@@ -33,33 +39,36 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
         height: container.clientHeight,
         wireframes: false,
         background: 'transparent',
+        pixelRatio: Math.min(window.devicePixelRatio, 1), // Limit pixel ratio
       }
     });
 
-    // Create floating particles
+    // Create floating particles with reduced complexity
     const createParticles = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
-      const particleCount = Math.floor(width * height * density);
+      // Limit maximum particles for performance
+      const maxParticles = Math.min(Math.floor(width * height * density), 80);
       const particles = [];
 
       const colors = [color1, color2, '#ffffff'];
       
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 10 + 2;
+      for (let i = 0; i < maxParticles; i++) {
+        // Use simpler, larger particles for better performance
+        const size = Math.random() * 6 + 3;
         const x = Math.random() * width;
         const y = Math.random() * height;
         const color = colors[Math.floor(Math.random() * colors.length)];
-        const opacity = Math.random() * 0.3 + 0.1;
+        const opacity = Math.random() * 0.25 + 0.05;
         
         const particle = Bodies.circle(x, y, size, {
           render: {
             fillStyle: color,
             opacity: opacity
           },
-          frictionAir: 0.1,
-          restitution: 0.3,
-          friction: 0.001,
+          frictionAir: 0.2, // Increased for slower movement
+          restitution: 0.2,
+          friction: 0.005,
           isStatic: false
         });
         
@@ -82,12 +91,14 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     
     Composite.add(engine.world, walls);
 
-    // Add mouse interaction
+    // Add mouse interaction with reduced sensitivity 
     const mouse = Mouse.create(render.canvas);
+    mouse.pixelRatio = Math.min(window.devicePixelRatio, 1); // Optimize for performance
+    
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
-        stiffness: 0.2,
+        stiffness: 0.1, // Reduced for lower CPU usage
         render: {
           visible: false
         }
@@ -98,43 +109,45 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     render.mouse = mouse;
 
     // Run the engine and renderer
-    Runner.run(Runner.create(), engine);
+    const runner = Runner.create({
+      isFixed: true, // Use fixed timestep for better performance
+      delta: 1000/30 // Limit to 30 FPS
+    });
+    Runner.run(runner, engine);
     Render.run(render);
 
-    // Handle resize
+    // Handle resize with debouncing
+    let resizeTimeout;
     const handleResize = () => {
-      render.options.width = container.clientWidth;
-      render.options.height = container.clientHeight;
-      render.canvas.width = container.clientWidth;
-      render.canvas.height = container.clientHeight;
-      
-      // Reposition walls
-      walls[0].position.x = container.clientWidth / 2;
-      walls[1].position.x = container.clientWidth / 2;
-      walls[1].position.y = container.clientHeight + 10;
-      walls[2].position.y = container.clientHeight / 2;
-      walls[3].position.x = container.clientWidth + 10;
-      walls[3].position.y = container.clientHeight / 2;
-      
-      // Update wall sizes
-      Matter.Body.setVertices(walls[0], Matter.Vertices.fromPath(`0 0 ${container.clientWidth} 0 ${container.clientWidth} 20 0 20`));
-      Matter.Body.setVertices(walls[1], Matter.Vertices.fromPath(`0 0 ${container.clientWidth} 0 ${container.clientWidth} 20 0 20`));
-      Matter.Body.setVertices(walls[2], Matter.Vertices.fromPath(`0 0 20 0 20 ${container.clientHeight} 0 ${container.clientHeight}`));
-      Matter.Body.setVertices(walls[3], Matter.Vertices.fromPath(`0 0 20 0 20 ${container.clientHeight} 0 ${container.clientHeight}`));
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        render.options.width = container.clientWidth;
+        render.options.height = container.clientHeight;
+        render.canvas.width = container.clientWidth;
+        render.canvas.height = container.clientHeight;
+        
+        // Reposition walls
+        walls[0].position.x = container.clientWidth / 2;
+        walls[1].position.x = container.clientWidth / 2;
+        walls[1].position.y = container.clientHeight + 10;
+        walls[2].position.y = container.clientHeight / 2;
+        walls[3].position.x = container.clientWidth + 10;
+        walls[3].position.y = container.clientHeight / 2;
+      }, 200); // Debounce resize
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       // Cleanup
+      clearTimeout(resizeTimeout);
       window.removeEventListener('resize', handleResize);
+      // Stop simulation first
+      Runner.stop(runner);
       Render.stop(render);
-      Runner.stop(Runner.create(), engine);
+      // Clean up Matter engine
       if (render.canvas) {
         render.canvas.remove();
-      }
-      if (render.canvas && render.canvas.parentNode) {
-        render.canvas.parentNode.removeChild(render.canvas);
       }
       Engine.clear(engine);
     };

@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import { FaGithub, FaExternalLinkAlt, FaLaptopCode, FaCode, FaFolder } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaLaptopCode, FaCode, FaFolder, FaCodeBranch } from 'react-icons/fa';
 import projects from '../assets/Projects.json';
+import AnimatedBackground from './helperComponents/AnimatedBackground';
+import SectionObserver from './helperComponents/SectionObserver';
+import { Link } from 'react-router-dom';
 
 const ProjectCard = ({ project, index }) => {
   const cardRef = useRef(null);
@@ -38,7 +41,12 @@ const ProjectCard = ({ project, index }) => {
   // Get a color based on the project index
   const getColor = (index) => {
     const colors = ["text-blue-500", "text-purple-500", "text-green-500", "text-yellow-400", "text-cyan-400", "text-orange-500"];
-    return colors[index % colors.length];
+    const bgColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-yellow-400", "bg-cyan-400", "bg-orange-500"];
+    
+    return {
+      text: colors[index % colors.length],
+      bg: bgColors[index % bgColors.length]
+    };
   };
   
   // Get an icon based on technologies
@@ -63,9 +71,13 @@ const ProjectCard = ({ project, index }) => {
       className="card group scale-in"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
+      <div className="absolute -top-2 -right-2 w-16 h-16 rounded-br-xl rounded-tl-xl overflow-hidden">
+        <div className={`${color.bg} absolute rotate-45 w-24 h-3 -left-2 top-5 opacity-80`}></div>
+      </div>
+      
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className={`text-3xl ${color} group-hover:scale-110 transition-transform duration-300`}>
+          <div className={`text-3xl ${color.text} group-hover:scale-110 transition-transform duration-300`}>
             {icon}
           </div>
           <h3 className="text-lg font-semibold">{project.name}</h3>
@@ -78,7 +90,7 @@ const ProjectCard = ({ project, index }) => {
         {project.technologies.map((tech, i) => (
           <span
             key={i}
-            className={`text-xs px-2 py-1 rounded-full ${color} bg-opacity-20`}
+            className={`text-xs px-2 py-1 rounded-full ${color.text} bg-opacity-10 ${color.bg} bg-opacity-10 backdrop-blur-sm`}
           >
             {tech}
           </span>
@@ -90,7 +102,7 @@ const ProjectCard = ({ project, index }) => {
           href={project.links.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white hover:text-blue-400 transition-colors duration-300"
+          className="text-white hover:text-blue-400 transition-colors duration-300 group-hover:animate-bounce"
           aria-label={`GitHub repository for ${project.name}`}
         >
           <FaGithub className="text-xl" />
@@ -101,7 +113,7 @@ const ProjectCard = ({ project, index }) => {
             href={project.links.live.main}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:text-blue-400 transition-colors duration-300"
+            className="text-white hover:text-blue-400 transition-colors duration-300 group-hover:animate-bounce"
             aria-label={`Live demo for ${project.name}`}
           >
             <FaExternalLinkAlt className="text-xl" />
@@ -112,41 +124,103 @@ const ProjectCard = ({ project, index }) => {
   );
 };
 
-const Projects = () => {
+const HexGrid = ({ color, opacity }) => {
+  const hexSize = 30;
+  const hexagons = [];
+  const rows = 5;
+  const cols = 15;
+  
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = col * hexSize * 1.5;
+      const y = row * hexSize * 1.732 + (col % 2) * (hexSize * 0.866);
+      
+      hexagons.push(
+        <polygon 
+          key={`${row}-${col}`}
+          points={`${hexSize},0 ${hexSize * 0.5},${hexSize * 0.866} ${-hexSize * 0.5},${hexSize * 0.866} ${-hexSize},0 ${-hexSize * 0.5},${-hexSize * 0.866} ${hexSize * 0.5},${-hexSize * 0.866}`}
+          transform={`translate(${x}, ${y})`}
+          fill={color}
+          fillOpacity={opacity}
+          className="transition-opacity duration-1000"
+          style={{ animationDelay: `${(row + col) * 0.1}s` }}
+        />
+      );
+    }
+  }
+  
   return (
-    <section id="projects" className="section-container">
-      <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Projects</span></h2>
-      
-      <div className="mb-12">
-        <div className="section-header">
-          <div className="section-icon-container" style={{'--from-color': '#3b82f6', '--to-color': '#2563eb'}}>
-            <FaLaptopCode className="text-white text-xl" />
-          </div>
-          <h3 className="text-2xl font-bold" style={{ color: '#3b82f6' }}>Featured Projects</h3>
-        </div>
+    <svg 
+      className="absolute top-0 left-0 w-full h-full z-0 opacity-30" 
+      preserveAspectRatio="xMidYMid slice"
+      viewBox="0 0 700 400"
+    >
+      <g>{hexagons}</g>
+    </svg>
+  );
+};
+
+const Projects = ({ isHomePage = false, maxProjects = 0 }) => {
+  // For homepage, show only top featured projects
+  const featuredProjects = isHomePage ? 
+    projects.projects.slice(0, maxProjects) : 
+    projects.projects.slice(0, 6);
+    
+  const otherProjects = projects.projects.slice(6, 12);
+
+  return (
+    <SectionObserver>
+      <section id="projects" className="section-container relative">
+        <AnimatedBackground color1="#3b82f6" color2="#ec4899" density={0.00007} />
+        <HexGrid color="#3b82f6" opacity={0.1} />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
-          {projects.projects.slice(0, 6).map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
-      </div>
-      
-      <div>
-        <div className="section-header">
-          <div className="section-icon-container" style={{'--from-color': '#a855f7', '--to-color': '#9333ea'}}>
-            <FaCode className="text-white text-xl" />
+        <div className="relative z-10">
+          <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Projects</span></h2>
+          
+          <div className="mb-12">
+            <div className="section-header">
+              <div className="section-icon-container" style={{'--from-color': '#3b82f6', '--to-color': '#2563eb'}}>
+                <FaLaptopCode className="text-white text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold premium-heading glow-effect" style={{ color: '#3b82f6' }}>Featured Projects</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
+              {featuredProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))}
+            </div>
           </div>
-          <h3 className="text-2xl font-bold" style={{ color: '#a855f7' }}>Other Projects</h3>
+          
+          {isHomePage ? (
+            <div className="flex justify-center mt-12">
+              <Link 
+                to="/projects" 
+                className="premium-button primary flex items-center gap-2 transform transition-all duration-300 hover:scale-105"
+              >
+                <FaFolder className="text-white" />
+                <span>View All Projects</span>
+              </Link>
+            </div>
+          ) : (
+            <div>
+              <div className="section-header">
+                <div className="section-icon-container" style={{'--from-color': '#a855f7', '--to-color': '#9333ea'}}>
+                  <FaCodeBranch className="text-white text-xl rotate-slow" />
+                </div>
+                <h3 className="text-2xl font-bold premium-heading glow-effect" style={{ color: '#a855f7' }}>Other Projects</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
+                {otherProjects.map((project, index) => (
+                  <ProjectCard key={project.id} project={project} index={index + 6} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
-          {projects.projects.slice(6, 12).map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index + 6} />
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+    </SectionObserver>
   );
 };
 

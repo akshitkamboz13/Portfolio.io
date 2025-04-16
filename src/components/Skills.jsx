@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNode, FaPython, FaDatabase, FaGitAlt, FaDocker, FaAws, FaFigma, FaLaptopCode, FaServer, FaCode } from "react-icons/fa";
 import { SiTypescript, SiTailwindcss, SiMongodb, SiPostgresql, SiGraphql, SiRedux, SiNextdotjs, SiExpress, SiFirebase } from "react-icons/si";
+import AnimatedBackground from './helperComponents/AnimatedBackground';
+import SectionObserver from './helperComponents/SectionObserver';
+import { Link } from "react-router-dom";
 
 const SkillCard = ({ icon, name, level, color, index }) => {
   const cardRef = useRef(null);
@@ -58,7 +61,7 @@ const SkillCard = ({ icon, name, level, color, index }) => {
             }}
           >
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-white opacity-30 animate-[pulse_2s_infinite]"></div>
-          </div>
+            </div>
         </div>
       </div>
       
@@ -94,6 +97,21 @@ const getColorValue = (colorClass) => {
   return colorMap[colorClass] || '#3b82f6'; // Default to blue if color not found
 };
 
+const FloatingParticle = ({ color, size, delay, duration, top, left }) => (
+  <div 
+    className="absolute rounded-full opacity-20 floating"
+    style={{ 
+      backgroundColor: color,
+      width: size,
+      height: size,
+      top: top,
+      left: left,
+      animationDelay: delay,
+      animationDuration: duration
+    }}
+  />
+);
+
 const skillsData = [
   { name: "HTML5", icon: <FaHtml5 />, level: 95, color: "text-orange-500" },
   { name: "CSS3", icon: <FaCss3Alt />, level: 90, color: "text-blue-500" },
@@ -116,7 +134,8 @@ const skillsData = [
   { name: "UI/UX Design", icon: <FaFigma />, level: 75, color: "text-purple-400" },
 ];
 
-const Skills = () => {
+const Skills = ({ isHomePage = false, maxSkills = 0 }) => {
+  // Filter and limit skills for different sections
   const frontendSkills = skillsData.filter(skill => 
     ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Redux", "Next.js", "Tailwind CSS"].includes(skill.name)
   );
@@ -129,55 +148,99 @@ const Skills = () => {
     ["Git", "Docker", "AWS", "UI/UX Design"].includes(skill.name)
   );
 
+  // For homepage, show a limited selection of top skills
+  const homepageSkills = isHomePage ? 
+    [...frontendSkills, ...backendSkills, ...devOpsSkills]
+      .sort((a, b) => b.level - a.level)
+      .slice(0, maxSkills) : 
+    null;
+
   return (
-    <section id="skills" className="section-container">
-      <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Skills</span></h2>
-      
-      <div className="mb-20">
-        <div className="section-header">
-          <div className="section-icon-container" style={{'--from-color': '#3b82f6', '--to-color': '#2563eb'}}>
-            <FaLaptopCode className="text-white text-xl" />
-          </div>
-          <h3 className="text-2xl font-bold" style={{ color: '#3b82f6' }}>Frontend Development</h3>
-        </div>
+    <SectionObserver>
+      <section id="skills" className="section-container relative">
+        <AnimatedBackground color1="#a855f7" color2="#6366f1" density={0.00005} />
         
-        <div className="card-grid">
-          {frontendSkills.map((skill, index) => (
-            <SkillCard key={index} {...skill} index={index} />
-          ))}
-        </div>
-      </div>
-      
-      <div className="mb-20">
-        <div className="section-header">
-          <div className="section-icon-container" style={{'--from-color': '#a855f7', '--to-color': '#9333ea'}}>
-            <FaServer className="text-white text-xl" />
-          </div>
-          <h3 className="text-2xl font-bold" style={{ color: '#a855f7' }}>Backend Development</h3>
-        </div>
+        {/* Decorative floating particles */}
+        <FloatingParticle color="#a855f7" size="85px" delay="0.2s" duration="4.5s" top="8%" left="12%" />
+        <FloatingParticle color="#6366f1" size="65px" delay="0.8s" duration="5s" top="65%" left="88%" />
+        <FloatingParticle color="#c084fc" size="45px" delay="1.5s" duration="3.8s" top="35%" left="5%" />
+        <FloatingParticle color="#818cf8" size="55px" delay="0.5s" duration="4.2s" top="20%" left="85%" />
+        <FloatingParticle color="#6366f1" size="35px" delay="1.2s" duration="3.5s" top="80%" left="20%" />
         
-        <div className="card-grid">
-          {backendSkills.map((skill, index) => (
-            <SkillCard key={index} {...skill} index={index} />
-          ))}
-        </div>
-      </div>
-      
-      <div>
-        <div className="section-header">
-          <div className="section-icon-container" style={{'--from-color': '#6366f1', '--to-color': '#4f46e5'}}>
-            <FaCode className="text-white text-xl" />
-          </div>
-          <h3 className="text-2xl font-bold" style={{ color: '#6366f1' }}>DevOps & Design</h3>
-        </div>
-        
-        <div className="card-grid">
-          {devOpsSkills.map((skill, index) => (
-            <SkillCard key={index} {...skill} index={index} />
-          ))}
-        </div>
+        <div className="relative z-10">
+          <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Skills</span></h2>
+          
+          {isHomePage ? (
+            <>
+              <div className="mb-8">
+                <div className="card-grid">
+                  {homepageSkills.map((skill, index) => (
+                    <SkillCard key={index} {...skill} index={index} />
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-12">
+                <Link 
+                  to="/skills" 
+                  className="premium-button primary flex items-center gap-2 transform transition-all duration-300 hover:scale-105"
+                >
+                  <FaCode className="text-white" />
+                  <span>View All Skills</span>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mb-20">
+                <div className="section-header">
+                  <div className="section-icon-container" style={{'--from-color': '#3b82f6', '--to-color': '#2563eb'}}>
+                    <FaLaptopCode className="text-white text-xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold" style={{ color: '#3b82f6' }}>Frontend Development</h3>
+                </div>
+                
+                <div className="card-grid">
+                  {frontendSkills.map((skill, index) => (
+                    <SkillCard key={index} {...skill} index={index} />
+                  ))}
+                </div>
+              </div>
+              
+              <div className="mb-20">
+                <div className="section-header">
+                  <div className="section-icon-container" style={{'--from-color': '#a855f7', '--to-color': '#9333ea'}}>
+                    <FaServer className="text-white text-xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold" style={{ color: '#a855f7' }}>Backend Development</h3>
+                </div>
+                
+                <div className="card-grid">
+                  {backendSkills.map((skill, index) => (
+                    <SkillCard key={index} {...skill} index={index} />
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <div className="section-header">
+                  <div className="section-icon-container" style={{'--from-color': '#6366f1', '--to-color': '#4f46e5'}}>
+                    <FaCode className="text-white text-xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold" style={{ color: '#6366f1' }}>DevOps & Design</h3>
+                </div>
+                
+                <div className="card-grid">
+                  {devOpsSkills.map((skill, index) => (
+                    <SkillCard key={index} {...skill} index={index} />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
       </div>
     </section>
+    </SectionObserver>
   );
 };
 

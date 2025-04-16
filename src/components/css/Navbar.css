@@ -31,7 +31,6 @@
 
 .navbar__menu li a:hover {
   color: #ffffff; /* Accent color */
-  border-bottom: 2px solid #ffffff;
 }
 
 .navbar__toggle {
@@ -55,11 +54,13 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(12, 15, 19, 0.95);
+  background: rgba(12, 15, 19, 0.98);
   backdrop-filter: blur(15px);
   justify-content: center;
   align-items: center;
   z-index: 40;
+  overflow-y: auto;
+  padding: 4rem 1rem;
 }
 
 .navbar__mobile-menu.open {

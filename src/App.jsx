@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Navbar from './components/Navbar';
@@ -10,13 +10,21 @@ import Certifications from './components/Certifications';
 import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
+import NotFound from './components/NotFound';
+import CustomLoader from './components/helperComponents/CustomLoader';
+// import CustomCursor from './components/cursor/CustomCursor';
+import './components/css/PremiumStyles.css';
 
 // Scroll to top component
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
   }, [pathname]);
 
   return null;
@@ -49,41 +57,163 @@ const ScrollTopButton = () => {
   return (
     <button 
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 p-3 rounded-full bg-blue-600 text-white shadow-lg z-50 transition-all duration-300 hover:bg-blue-700 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
+      className={`fixed bottom-8 right-8 p-3 rounded-full z-50 transition-all duration-300 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
       aria-label="Scroll to top"
+      style={{
+        background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+        boxShadow: '0 4px 20px rgba(59, 130, 246, 0.5)'
+      }}
     >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
       </svg>
     </button>
   );
 };
 
+// Page transition wrapper with SEO
+const PageTransition = ({ children, title, description }) => {
+  const pageRef = useRef(null);
+  
+  useEffect(() => {
+    const page = pageRef.current;
+    if (!page) return;
+    
+    page.classList.add('fade-in');
+    
+    return () => {
+      page.classList.remove('fade-in');
+    };
+  }, []);
+  
+  return (
+    <>
+      <Helmet>
+        <title>{title} | Akshit Kamboj</title>
+        <meta name="description" content={description} />
+      </Helmet>
+      <div ref={pageRef} className="opacity-0 transition-opacity duration-500">
+        {children}
+      </div>
+    </>
+  );
+};
+
 const App = () => {
   return (
-    <div className="relative font-sans custom-cursor">
+    <div className="relative font-sans">
       <Helmet>
-        <title>Portfolio.io | Akshit Kamboj</title>
-        <meta name="description" content="Akshit Kamboj's portfolio showcasing skills, projects, and experience in full-stack development." />
-        <meta name="keywords" content="full stack developer, web development, react, nodejs, portfolio" />
-        <meta name="author" content="Akshit Kamboj" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </Helmet>
+      
       <Router basename="/Portfolio.io">
         <ScrollToTop />
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/skills" element={<Skills />} />
-          <Route path="/educations" element={<Educations />} />
-          <Route path="/certifications" element={<Certifications />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/experience" element={<Experience />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+        <Suspense fallback={<CustomLoader />}>
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <PageTransition 
+                  title="Home" 
+                  description="Akshit Kamboj - Full Stack Developer specializing in modern web applications with a focus on user experience, performance, and scalability."
+                >
+                  <Home />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/about" 
+              element={
+                <PageTransition 
+                  title="About Me" 
+                  description="Learn about Akshit Kamboj, a passionate Full Stack Developer with expertise in building modern web applications."
+                >
+                  <About />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/skills" 
+              element={
+                <PageTransition 
+                  title="Skills" 
+                  description="Explore Akshit Kamboj's technical skills and expertise in frontend, backend, and development technologies."
+                >
+                  <Skills />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/educations" 
+              element={
+                <PageTransition 
+                  title="Education" 
+                  description="Akshit Kamboj's educational background and qualifications in Computer Engineering and related fields."
+                >
+                  <Educations />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/certifications" 
+              element={
+                <PageTransition 
+                  title="Certifications" 
+                  description="Certifications and credentials earned by Akshit Kamboj in various technologies and development areas."
+                >
+                  <Certifications />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/projects" 
+              element={
+                <PageTransition 
+                  title="Projects" 
+                  description="Portfolio of projects developed by Akshit Kamboj, showcasing practical applications of technical skills."
+                >
+                  <Projects />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/experience" 
+              element={
+                <PageTransition 
+                  title="Experience" 
+                  description="Professional experience and work history of Akshit Kamboj in the field of web development."
+                >
+                  <Experience />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="/contact" 
+              element={
+                <PageTransition 
+                  title="Contact" 
+                  description="Get in touch with Akshit Kamboj for collaboration, job opportunities, or any queries related to web development."
+                >
+                  <Contact />
+                </PageTransition>
+              } 
+            />
+            <Route 
+              path="*" 
+              element={
+                <PageTransition 
+                  title="404 - Page Not Found" 
+                  description="The page you are looking for does not exist."
+                >
+                  <NotFound />
+                </PageTransition>
+              } 
+            />
+          </Routes>
+        </Suspense>
         <ScrollTopButton />
       </Router>
     </div>

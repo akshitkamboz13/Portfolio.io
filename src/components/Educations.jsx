@@ -1,9 +1,12 @@
 import React, { useRef, useEffect } from 'react';
-import { FaGraduationCap, FaSchool, FaUniversity } from 'react-icons/fa';
+import { FaGraduationCap, FaSchool, FaUniversity, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import rbuIMG from '../assets/images/rbu.jpeg';
 import GSSSIMG from '../assets/images/GSSS.jpg';
 import NISDIMG from '../assets/images/NISD.png';
 import ACHIMG from '../assets/images/ACHS.jpg';
+import AnimatedBackground from './helperComponents/AnimatedBackground';
+import SectionObserver from './helperComponents/SectionObserver';
+import ParallaxImage from './helperComponents/ParallaxImage';
 
 const educationData = [
   {
@@ -62,14 +65,14 @@ const EducationCard = ({ data, index }) => {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
       
-      const rotateX = (y - centerY) / 15;
-      const rotateY = -(x - centerX) / 15;
+      const rotateX = (y - centerY) / 20;
+      const rotateY = -(x - centerX) / 20;
       
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px) scale3d(1.02, 1.02, 1.02)`;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
     };
     
     const handleMouseLeave = () => {
-      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0) scale3d(1, 1, 1)';
+      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
     };
     
     card.addEventListener('mousemove', handleMouseMove);
@@ -84,28 +87,45 @@ const EducationCard = ({ data, index }) => {
   return (
     <div 
       ref={cardRef}
-      className="card group scale-in"
+      className="premium-glass card"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="overflow-hidden rounded-lg h-40 md:w-1/3">
-          <img className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" src={data.image} alt={data.title} />
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="overflow-hidden rounded-lg h-48 lg:h-auto lg:w-1/3 relative">
+          <ParallaxImage 
+            src={data.image} 
+            alt={data.title} 
+            className="w-full h-full object-cover"
+            speed={0.03}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-60"></div>
         </div>
-        <div className="md:w-2/3">
-          <div className="flex items-center gap-3 mb-3">
-            <div className={`text-3xl ${data.color} group-hover:scale-110 transition-transform duration-300`}>{data.icon}</div>
-            <h3 className="text-lg font-semibold">{data.title}</h3>
+
+        <div className="lg:w-2/3 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className={`text-2xl ${data.color}`}>{data.icon}</div>
+            <h3 className="text-xl font-semibold leading-tight">{data.title}</h3>
           </div>
           
-          <p className="text-gray-300 mb-2">{data.institution}</p>
-          <p className={`${data.color} font-medium`}>{data.period}</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <FaMapMarkerAlt className="text-gray-400" />
+              <p className="text-gray-300">{data.institution}</p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <FaCalendarAlt className="text-gray-400" />
+              <p className={`${data.color} font-medium`}>{data.period}</p>
+            </div>
+          </div>
           
-          <div className="mt-4 hidden md:block relative h-24 w-full overflow-hidden rounded-lg">
+          <div className="mt-4 h-28 w-full overflow-hidden rounded-lg hidden md:block">
             <iframe
               src={data.location}
-              className="w-full h-full border-0 rounded-lg opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+              className="w-full h-full border-0 rounded-lg opacity-70 hover:opacity-100 transition-opacity duration-300"
               loading="lazy"
               title={`Map for ${data.institution}`}
+              style={{ filter: 'invert(90%)' }}
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
@@ -116,17 +136,43 @@ const EducationCard = ({ data, index }) => {
   );
 };
 
+const FloatingParticle = ({ color, size, delay, duration, top, left }) => (
+  <div 
+    className="absolute rounded-full opacity-20 floating"
+    style={{ 
+      backgroundColor: color,
+      width: size,
+      height: size,
+      top: top,
+      left: left,
+      animationDelay: delay,
+      animationDuration: duration
+    }}
+  />
+);
+
 const Education = () => {
   return (
-    <section id="education" className="section-container">
-      <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Education</span></h2>
-      
-      <div className="space-y-6 stagger-animation">
-        {educationData.map((edu, index) => (
-          <EducationCard key={edu.id} data={edu} index={index} />
-        ))}
-      </div>
-    </section>
+    <SectionObserver>
+      <section id="education" className="section-spacing section-container relative">
+        <AnimatedBackground color1="#3b82f6" color2="#4f46e5" density={0.00008} />
+        
+        {/* Decorative floating particles */}
+        <FloatingParticle color="#3b82f6" size="80px" delay="0s" duration="4s" top="10%" left="5%" />
+        <FloatingParticle color="#4f46e5" size="60px" delay="0.5s" duration="3.5s" top="70%" left="85%" />
+        <FloatingParticle color="#818cf8" size="40px" delay="1s" duration="4.5s" top="40%" left="90%" />
+        
+        <div className="relative z-10">
+          <h2 className="section-title text-center mb-12">My <span className="premium-gradient-text">Education</span></h2>
+          
+          <div className="space-y-8">
+            {educationData.map((edu, index) => (
+              <EducationCard key={edu.id} data={edu} index={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </SectionObserver>
   );
 };
 
