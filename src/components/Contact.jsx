@@ -156,7 +156,7 @@ const Contact = () => {
                 </ContactCard>
               </div>
             </div>
-            
+          
             <div className="card premium-glass p-6 relative overflow-hidden">
               {/* Subtle decorative elements */}
               <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-blue-500 opacity-5 blur-xl"></div>

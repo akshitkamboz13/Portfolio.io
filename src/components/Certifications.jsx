@@ -116,7 +116,7 @@ const Certificates = ({ count }) => {
         <CircleDecoration size="200px" top="80%" right="-100px" color="#8b5cf6" delay="1s" />
         
         <div className="relative z-10">
-          <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text shimmer">Certifications</span></h2>
+          <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Certifications</span></h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 stagger-animation">
             {displayedCertificates.map((certificate, index) => (

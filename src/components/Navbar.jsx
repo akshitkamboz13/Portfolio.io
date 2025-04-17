@@ -66,7 +66,8 @@ const Navbar = () => {
     <div className="w-full">
       <nav
         className={`navbar ${scrolled ? 'bg-custom-blue shadow-lg' : 'bg-custom-blue bg-opacity-70'} 
-        fixed top-0 w-full z-50 transition-all duration-300 py-4 px-5 backdrop-blur-md border-b border-gray-800/20`}
+        fixed top-0 w-full z-50 transition-all duration-300 py-4 md:py-4 px-5 backdrop-blur-md border-b border-gray-800/20`}
+        style={{ height: "65px" }}
       >
         <div className="navbar__container max-w-7xl mx-auto flex items-center justify-between">
           <div className="navbar__logo">

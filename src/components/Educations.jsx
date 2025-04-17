@@ -157,13 +157,17 @@ const Education = () => {
       <section id="education" className="section-spacing section-container relative">
         <AnimatedBackground color1="#3b82f6" color2="#4f46e5" density={0.00008} />
         
-        {/* Decorative floating particles */}
-        <FloatingParticle color="#3b82f6" size="80px" delay="0s" duration="4s" top="10%" left="5%" />
-        <FloatingParticle color="#4f46e5" size="60px" delay="0.5s" duration="3.5s" top="70%" left="85%" />
-        <FloatingParticle color="#818cf8" size="40px" delay="1s" duration="4.5s" top="40%" left="90%" />
+        {/* Decorative floating particles - hide on mobile */}
+        <div className="hidden md:block">
+          <FloatingParticle color="#3b82f6" size="80px" delay="0s" duration="4s" top="10%" left="5%" />
+          <FloatingParticle color="#4f46e5" size="60px" delay="0.5s" duration="3.5s" top="70%" left="85%" />
+          <FloatingParticle color="#818cf8" size="40px" delay="1s" duration="4.5s" top="40%" left="90%" />
+        </div>
         
         <div className="relative z-10">
-          <h2 className="section-title text-center mb-12">My <span className="premium-gradient-text">Education</span></h2>
+          <h2 className="section-title text-center mb-12">
+            My <span className="premium-gradient-text">Education</span>
+          </h2>
           
           <div className="space-y-8">
             {educationData.map((edu, index) => (

@@ -9,12 +9,16 @@
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.04) 0%, rgba(139, 92, 246, 0) 25%);
   max-width: 1440px;
   margin: 0 auto;
+  min-height: 100vh; /* Ensure minimum height for mobile */
+  padding-top: 80px; /* Increased padding to account for taller navbar */
 }
 
 /* Section Title */
 .section-title {
-  @apply text-3xl md:text-5xl font-bold text-white mb-12 tracking-tight;
+  @apply text-2xl md:text-5xl font-bold text-white mb-12 tracking-tight;
   text-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  padding-top: 1rem; /* Add padding to prevent cut-off on mobile */
+  line-height: 1.2; /* Improve line height for better readability */
 }
 
 /* Section with glass morphism */
@@ -157,6 +161,7 @@
 
 .fade-in {
   animation: fadeIn 0.5s ease forwards;
+  opacity: 1 !important; /* Force visibility for mobile devices */
 }
 
 .slide-up {

@@ -74,7 +74,7 @@ const ProjectCard = ({ project, index }) => {
       <div className="absolute -top-2 -right-2 w-16 h-16 rounded-br-xl rounded-tl-xl overflow-hidden">
         <div className={`${color.bg} absolute rotate-45 w-24 h-3 -left-2 top-5 opacity-80`}></div>
       </div>
-      
+
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className={`text-3xl ${color.text} group-hover:scale-110 transition-transform duration-300`}>
@@ -83,7 +83,7 @@ const ProjectCard = ({ project, index }) => {
           <h3 className="text-lg font-semibold">{project.name}</h3>
         </div>
       </div>
-      
+
       <p className="text-gray-300 mb-6 text-sm">{project.description}</p>
       
       <div className="flex flex-wrap gap-2 mb-6">
@@ -92,10 +92,10 @@ const ProjectCard = ({ project, index }) => {
             key={i}
             className={`text-xs px-2 py-1 rounded-full ${color.text} bg-opacity-10 ${color.bg} bg-opacity-10 backdrop-blur-sm`}
           >
-            {tech}
-          </span>
-        ))}
-      </div>
+                  {tech}
+                </span>
+              ))}
+            </div>
       
       <div className="mt-auto pt-4 flex gap-4 justify-end">
         <a
@@ -108,7 +108,7 @@ const ProjectCard = ({ project, index }) => {
           <FaGithub className="text-xl" />
         </a>
         
-        {project.links.live.main && (
+              {project.links.live.main && (
           <a
             href={project.links.live.main}
             target="_blank"
@@ -117,8 +117,8 @@ const ProjectCard = ({ project, index }) => {
             aria-label={`Live demo for ${project.name}`}
           >
             <FaExternalLinkAlt className="text-xl" />
-          </a>
-        )}
+                </a>
+              )}
       </div>
     </div>
   );
@@ -172,7 +172,10 @@ const Projects = ({ isHomePage = false, maxProjects = 0 }) => {
     <SectionObserver>
       <section id="projects" className="section-container relative">
         <AnimatedBackground color1="#3b82f6" color2="#ec4899" density={0.00007} />
-        <HexGrid color="#3b82f6" opacity={0.1} />
+        {/* Hide HexGrid on mobile */}
+        <div className="hidden md:block">
+          <HexGrid color="#3b82f6" opacity={0.1} />
+        </div>
         
         <div className="relative z-10">
           <h2 className="section-title text-center mb-16">My <span className="premium-gradient-text">Projects</span></h2>
@@ -218,8 +221,8 @@ const Projects = ({ isHomePage = false, maxProjects = 0 }) => {
               </div>
             </div>
           )}
-        </div>
-      </section>
+      </div>
+    </section>
     </SectionObserver>
   );
 };

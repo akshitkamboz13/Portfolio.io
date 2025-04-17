@@ -29,6 +29,9 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     // Reduce gravity effect for performance
     engine.world.gravity.y = 0;
 
+    // Check if mobile device
+    const isMobile = window.innerWidth < 768;
+
     // Create renderer with optimized settings
     const render = Render.create({
       element: container,
@@ -39,7 +42,7 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
         height: container.clientHeight,
         wireframes: false,
         background: 'transparent',
-        pixelRatio: Math.min(window.devicePixelRatio, 1), // Limit pixel ratio
+        pixelRatio: Math.min(window.devicePixelRatio, isMobile ? 0.8 : 1), // Reduce pixel ratio on mobile
       }
     });
 
@@ -47,8 +50,16 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     const createParticles = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
+      
+      // Further reduce particles on mobile
+      const adjustedDensity = isMobile ? density * 0.5 : density;
+      
       // Limit maximum particles for performance
-      const maxParticles = Math.min(Math.floor(width * height * density), 80);
+      const maxParticles = Math.min(
+        Math.floor(width * height * adjustedDensity), 
+        isMobile ? 40 : 80
+      );
+      
       const particles = [];
 
       const colors = [color1, color2, '#ffffff'];
@@ -93,7 +104,7 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
 
     // Add mouse interaction with reduced sensitivity 
     const mouse = Mouse.create(render.canvas);
-    mouse.pixelRatio = Math.min(window.devicePixelRatio, 1); // Optimize for performance
+    mouse.pixelRatio = Math.min(window.devicePixelRatio, isMobile ? 0.8 : 1); // Optimize for performance
     
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse: mouse,
@@ -109,10 +120,12 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     render.mouse = mouse;
 
     // Run the engine and renderer
+    // Create a runner that respects the recommended delta value
     const runner = Runner.create({
-      isFixed: true, // Use fixed timestep for better performance
-      delta: 1000/30 // Limit to 30 FPS
+      // Remove isFixed as it's now redundant
+      delta: 16.667 // Keep delta at or below 16.667ms (60 FPS)
     });
+    
     Runner.run(runner, engine);
     Render.run(render);
 
