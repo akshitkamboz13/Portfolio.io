@@ -1,2 +1,0 @@
-import{j as e}from"./index-SaPCnnn4.js";const s=()=>e.jsx(e.Fragment,{children:e.jsx("div",{className:"relative w-full h-screen bg-custom-blue",children:e.jsx("div",{className:"absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center",children:e.jsx("h1",{className:"text-4xl md:text-6xl font-bold",children:"Soon to be updated"})})})});export{s as default};
-//# sourceMappingURL=Experience-D-v6busp.js.map
