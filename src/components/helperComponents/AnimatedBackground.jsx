@@ -1,14 +1,36 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
 
 const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 0.00008 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const engineRef = useRef(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    // Check if user prefers reduced motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleReducedMotionChange = () => {
+      setPrefersReducedMotion(mediaQuery.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleReducedMotionChange);
+    
+    return () => {
+      mediaQuery.removeEventListener('change', handleReducedMotionChange);
+    };
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    // Skip animation for users who prefer reduced motion
+    if (prefersReducedMotion) {
+      return;
+    }
 
     // Module aliases
     const Engine = Matter.Engine,
@@ -32,6 +54,9 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
     // Check if mobile device
     const isMobile = window.innerWidth < 768;
 
+    // Check for low-end devices (rough estimation)
+    const isLowEndDevice = window.navigator.hardwareConcurrency ? window.navigator.hardwareConcurrency <= 4 : false;
+
     // Create renderer with optimized settings
     const render = Render.create({
       element: container,
@@ -51,13 +76,13 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
       const width = container.clientWidth;
       const height = container.clientHeight;
       
-      // Further reduce particles on mobile
-      const adjustedDensity = isMobile ? density * 0.5 : density;
+      // Further reduce particles on mobile or low-end devices
+      const adjustedDensity = isMobile || isLowEndDevice ? density * 0.3 : density * 0.5;
       
       // Limit maximum particles for performance
       const maxParticles = Math.min(
         Math.floor(width * height * adjustedDensity), 
-        isMobile ? 40 : 80
+        isMobile ? 25 : isLowEndDevice ? 35 : 40
       );
       
       const particles = [];
@@ -126,6 +151,11 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
       delta: 16.667 // Keep delta at or below 16.667ms (60 FPS)
     });
     
+    // Adjust runner timing for low-end devices
+    if (isLowEndDevice) {
+      runner.delta = 20; // Lower frame rate for better performance
+    }
+    
     Runner.run(runner, engine);
     Render.run(render);
 
@@ -164,12 +194,24 @@ const AnimatedBackground = ({ color1 = '#3b82f6', color2 = '#2563eb', density = 
       }
       Engine.clear(engine);
     };
-  }, [color1, color2, density]);
+  }, [color1, color2, density, prefersReducedMotion]);
+
+  // For users who prefer reduced motion, display a static gradient background
+  if (prefersReducedMotion) {
+    return (
+      <div 
+        className="absolute inset-0 pointer-events-none overflow-hidden bg-gradient-to-br"
+        style={{ backgroundImage: `radial-gradient(circle at 30% 50%, ${color1}10, transparent), radial-gradient(circle at 70% 50%, ${color2}10, transparent)` }}
+        aria-hidden="true"
+      ></div>
+    );
+  }
 
   return (
     <div 
       ref={containerRef} 
       className="absolute inset-0 pointer-events-none overflow-hidden"
+      aria-hidden="true"
     >
       <canvas 
         ref={canvasRef} 

@@ -363,3 +363,152 @@
     padding-top: 1rem;
   }
 }
+
+/* Fix border-radius on Firefox */
+@-moz-document url-prefix() {
+  .rounded-full {
+    background-clip: padding-box;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .section-container {
+    padding: 1rem !important;
+    page-break-inside: avoid;
+    background: none !important;
+  }
+  
+  .premium-gradient-text {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+    background: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Hide elements not needed for print */
+  nav, footer, .animate-spin, .floating, .animate-pulse, .AnimatedBackground {
+    display: none !important;
+  }
+}
+
+/* Improve touch device handling */
+@media (hover: none) {
+  .hover\:scale-105 {
+    transform: none !important;
+  }
+  
+  /* Reduce hover animations on touch devices */
+  .card:hover {
+    transform: translateY(-2px) !important;
+  }
+  
+  /* Make buttons more touch-friendly */
+  .premium-button {
+    transform: none !important;
+  }
+}
+
+/* Add these 404 page animations after the other animation definitions */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Astronaut glow effect */
+.astronaut {
+  position: relative;
+}
+
+.astronaut::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+  z-index: -1;
+  animation: pulse 2s infinite;
+}
+
+/* Secondary button style for 404 page */
+.premium-button.secondary {
+  @apply bg-gray-800 text-white hover:bg-gray-700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Add these 404 page game styles */
+
+/* Game selection and common styles */
+.game-option {
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.game-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Astronaut game - harder difficulty effect */
+.astronaut-hard {
+  animation: float 1.5s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+/* Ship for asteroid game */
+.ship {
+  transition: left 0.1s ease-out;
+  z-index: 10;
+}
+
+/* Power-ups for games */
+.power-up {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  animation: pulse 1s infinite;
+}
+
+.power-time {
+  background: rgba(59, 130, 246, 0.3);
+  border: 2px solid #3b82f6;
+  color: white;
+}
+
+.power-score {
+  background: rgba(217, 70, 239, 0.3);
+  border: 2px solid #d946ef;
+  color: white;
+}

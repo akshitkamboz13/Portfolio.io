@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Navbar from './components/Navbar';
+import Footer from './components/helperComponents/Footer';
 import CustomLoader from './components/helperComponents/CustomLoader';
 import './components/css/PremiumStyles.css';
 
@@ -112,6 +113,14 @@ const App = () => {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta name="theme-color" content="#0c101a" />
+          <meta name="author" content="Akshit Kamboj" />
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="Akshit Kamboj Portfolio" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:creator" content="@siakshit" />
+          <html lang="en" />
         </Helmet>
         
         <Router basename="/Portfolio.io">
@@ -220,6 +229,7 @@ const App = () => {
               />
           </Routes>
           </Suspense>
+          <Footer />
           <ScrollTopButton />
         </Router>
       </div>

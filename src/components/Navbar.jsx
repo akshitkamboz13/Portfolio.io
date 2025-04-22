@@ -97,15 +97,17 @@ const Navbar = () => {
           <button
             className="navbar__toggle md:hidden text-white flex items-center justify-center p-2 rounded-md hover:bg-blue-600/20 transition-all duration-300"
             onClick={handleMenu}
-            aria-label="Toggle menu"
+            aria-label={menuOpen ? "Close main menu" : "Open main menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             style={{ background: 'transparent' }}
           >
             {menuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
@@ -113,26 +115,27 @@ const Navbar = () => {
         </div>
         
         {menuOpen && (
-          <div className="navbar__mobile-menu open">
+          <div className="navbar__mobile-menu open" id="mobile-menu" aria-label="Mobile navigation menu">
             <button
               className="absolute top-5 right-5 p-2 text-white hover:bg-blue-600/20 rounded-full transition-all duration-300"
               onClick={handleMenu}
               aria-label="Close menu"
             >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             
-            <ul className="flex flex-col items-center space-y-6 py-12 stagger-animation">
+            <ul className="flex flex-col items-center space-y-6 py-12 stagger-animation" role="menu">
               {navList.map((nav, index) => (
-                <li key={nav.id} style={{ '--i': index + 1 }}>
+                <li key={nav.id} style={{ '--i': index + 1 }} role="none">
                   <Link
                     to={nav.url}
                     className={`text-white text-2xl transition-colors relative ${
                       location.pathname === nav.url ? 'text-blue-400' : 'hover:text-blue-400'
                     }`}
                     onClick={() => setMenuOpen(false)}
+                    role="menuitem"
                   >
                     {nav.title}
                     <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-300 ${

@@ -43,12 +43,6 @@ const Home = () => {
           <Contact />
         </div>
       </main>
-      
-      <footer className="bg-gray-900 py-8 text-center text-sm text-gray-400">
-        <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} Akshit Kamboj. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 };
